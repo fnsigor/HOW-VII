@@ -5,10 +5,14 @@ const database = require("./dbConfig");
 const router = Router()
 
 // Configura o formato de moeda para BRL
-const formatarValor = new Intl.NumberFormat('pt-BR', {
-  style: 'currency',
-  currency: 'BRL',
-});
+const formatarValor = valor => {
+  const formatter = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  });
+
+  return formatter.format(valor)
+}
 
 
 router.get('/', (req, res) => {
@@ -39,7 +43,7 @@ router.get('/', (req, res) => {
     const valorTotal = pagamentos.reduce((total, p) => total + p.valorPagamento, 0);
 
     res.json({
-      valorTotal: formatarValor.format(valorTotal),
+      valorTotal: formatarValor(valorTotal),
       pagamentosFiltrados
     });
   });
@@ -63,7 +67,7 @@ router.get('/somaPagamentosPorImovel', (req, res) => {
 
     const somaPagamentosFormatada = results.map(row => ({
       idImovel: row.id_imovel,
-      somaValor: formatarValor.format(row.soma_valor)
+      somaValor: formatarValor(row.soma_valor)
     }));
 
     res.json(somaPagamentosFormatada);
@@ -87,7 +91,7 @@ router.get('/vendasPorMesAno', (req, res) => {
 
     const vendasPorMesAnoFormatada = results.map(row => ({
       mesAno: row.mes_ano,
-      totalVendas: formatarValor.format(row.total_vendas)
+      totalVendas: formatarValor(row.total_vendas)
     }));
 
     res.json(vendasPorMesAnoFormatada);
